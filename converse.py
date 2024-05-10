@@ -1,11 +1,13 @@
 import argparse 
-from langchain.document_loaders import GutenbergLoader
+from langchain_community.document_loaders import GutenbergLoader
 
 from shakespeare.character import ShakespeareCharacter
 from shakespeare.db import DialogueSplitter, ChromaDB
 
+import warnings
+warnings.filterwarnings("ignore")
+
 def load_text_to_chroma(chunk_size, chunk_overlap, cache_dir): 
-    print("Loading Shakespeare...")
     all_shakespeare = GutenbergLoader("https://www.gutenberg.org/cache/epub/100/pg100.txt").load()
     
     splitter = DialogueSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, separator="\n\n\n")
@@ -50,7 +52,8 @@ if __name__ == '__main__':
     parser.add_argument("--character-a", type=str, default="Romeo")
     parser.add_argument("--character-b", type=str, default="Hamlet")
     parser.add_argument("--starting-query", type=str, default="Hello! How are you?")
-    parser.add_argument("--num_conversations", type=int, default=10)
+    parser.add_argument("--num_conversations", type=int, default=3)
+    parser.add_argument("--load_from_disk", type=bool, default=True)
     args = parser.parse_args()
 
     main(args)

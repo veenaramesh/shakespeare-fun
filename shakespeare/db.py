@@ -1,7 +1,6 @@
 from langchain.text_splitter import TextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
-
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 
 class DialogueSplitter(TextSplitter): 
     """
@@ -114,7 +113,7 @@ class DialogueSplitter(TextSplitter):
     
     
 class ChromaDB: 
-    def __init__(self, model="sentence-transformers/all-MiniLM-L6-v2", cache_dir="./data"): 
+    def __init__(self, model="sentence-transformers/all-MiniLM-L6-v2", cache_dir="./data", load_from_disk=True): 
         """
         Initializes a ChromaDB object with the specified model and cache directory.
 
@@ -130,6 +129,7 @@ class ChromaDB:
         self.model = model 
         self.cache_dir = cache_dir
         self.vectordb = None 
+        self.load_from_disk = load_from_disk
 
     def get_embeddings(self): 
         """
@@ -164,13 +164,16 @@ class ChromaDB:
 
         # create the vector database using chroma and cache
         embedding = self.get_embeddings()
-        vectordb = Chroma.from_documents(
-            documents, 
-            embedding, 
-            persist_directory=self.cache_dir
-        )
-        # persist vector database to make retrieval later on quicker
-        vectordb.persist()
+        if self.load_from_disk: 
+            vectordb = Chroma(persist_directory=self.cache_dir, embedding_function=embedding)
+        else: 
+            vectordb = Chroma.from_documents(
+                documents, 
+                embedding, 
+                persist_directory=self.cache_dir
+            )
+            # persist vector database to make retrieval later on quicker
+            vectordb.persist()
         self.vectordb = vectordb
 
     def get_top_k_documents(self, query, k=10): 
