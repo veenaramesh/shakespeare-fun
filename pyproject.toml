@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "shakespeare-bot"
+version = "0.1.0"
+description = ""
+authors = ["Veena Ramesh <veena.ramesh.1@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+huggingface-hub = "^0.23.0"
+transformers = "^4.40.2"
+langchain = "^0.1.17"
+sentence-transformers = "^2.7.0"
+chromadb = "^0.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
